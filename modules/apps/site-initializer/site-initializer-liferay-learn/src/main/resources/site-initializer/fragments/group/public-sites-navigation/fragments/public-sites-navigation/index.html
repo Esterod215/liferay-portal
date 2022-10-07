@@ -9,22 +9,24 @@
 		class="align-items-center mb-3 utility-nav d-flex justify-content-between w-100"
 	>
 		<div class="d-flex sites-languages-container">
-			<div>
+			<div class="sites">
 				<span class="pr-1">[@clay["icon"] symbol="sites"/]</span>
 				<span>Liferay Sites</span>
 				<span>[@clay["icon"] symbol="caret-bottom-l"/]</span>
 			</div>
-			<div class="pl-4">
-				<span class="pr-1">[@clay["icon"] symbol="globe-lines"/]</span>
-				<span>EN</span>
-				<span>[@clay["icon"] symbol="caret-bottom-l"/]</span>
-			</div>
+			[#if configuration.showLanguageMenu]
+				<div class="language pl-4">
+					<span class="pr-1">[@clay["icon"] symbol="globe-lines"/]</span>
+					<span>EN</span>
+					<span>[@clay["icon"] symbol="caret-bottom-l"/]</span>
+				</div>
+			[/#if]
 		</div>
 		<div class="search-account-container d-flex align-items-center">
-			<span> [@clay["icon"] symbol="search"/] </span>
+			<span class="pr-4"> [@clay["icon"] symbol="search"/] </span>
 				[#if configuration.showAccountMenu]
-					<div class="account pl-4 position-relative">
-						<div class="account-info p-3 d-flex align-items-center">
+					<div class="account position-relative">
+						<div class="account-info px-2 py-3 d-flex align-items-center">
 							[#if themeDisplay.isSignedIn()]
 								<div class="user-avatar">
 									<img class="mx-100 h-100" src="${user.fetchPortraitURL(themeDisplay)}"/>
@@ -48,20 +50,18 @@
 									<div class="create-account-settings">
 										[#if themeDisplay.isSignedIn()]
 											<div class="signed-in-account">
-												<div class="settings p-3 d-flex">
+												<a class="settings p-3 d-flex text-decoration-none">
 													<span class="pr-2">[@clay["icon"] symbol="cog"/]</span>
 													<span class="account-settings">
-														<a class="text-decoration-none text-reset">${languageUtil.get(locale, "account-settings", "Account Settings")}</a>
+														${languageUtil.get(locale, "account-settings", "Account Settings")}
 													</span>
-												</div>
-												<div class="sign-out p-3 d-flex">
+												</a>
+												<a class="sign-out p-3 d-flex text-decoration-none" href="${htmlUtil.escape(themeDisplay.getURLSignOut())}">
 													<span class="pr-2 ">[@clay["icon"] symbol="user"/]</span>
 													<span class="w-100">
-														<a class="text-decoration-none text-reset" href="${htmlUtil.escape(themeDisplay.getURLSignOut())}">
-															${languageUtil.get(locale, "sign-out")}
-														</a>
+														${languageUtil.get(locale, "sign-out")}
 													</span>
-												</div>
+												</a>
 											</div>
 										[#else]
 											<div class="signed-out-account">
@@ -69,14 +69,11 @@
 													<span class="pr-2">[@clay["icon"] symbol="user-plus"/]</span>
 													<span>${languageUtil.get(locale, "create-an-account", "Create An Account")}</span>
 												</div>
-												<div class="p-3 sign-in d-flex">
+												<a class="p-3 sign-in d-flex text-decoration-none text-reset" href="${htmlUtil.escape(themeDisplay.getURLSignIn())}">
 													<span class="pr-2">[@clay["icon"] symbol="user"/]</span>
-													<span class="w-100">
-														<a class="text-decoration-none text-reset" href="${htmlUtil.escape(themeDisplay.getURLSignIn())}">
-															${languageUtil.get(locale, "sign-in")}
-														</a>
+													<span class="w-100">${languageUtil.get(locale, "sign-in")}
 													</span>
-												</div>
+												</a>
 											</div>
 										[/#if]
 									</div>
