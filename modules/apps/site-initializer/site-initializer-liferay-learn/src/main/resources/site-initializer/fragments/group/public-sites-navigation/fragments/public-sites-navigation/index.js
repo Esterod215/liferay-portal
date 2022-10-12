@@ -1,32 +1,30 @@
 var menuButtonGroup = fragmentElement.querySelector('.menu-button-group');
 
-var tabletMobileNavSection = fragmentElement.querySelector('.tablet-mobile-nav-section');
+var tabletMobileNavSection = fragmentElement.querySelector(
+	'.tablet-mobile-nav-section'
+);
 
 var menuBtn = fragmentElement.querySelector('.menu-btn');
 
 var closeBtn = fragmentElement.querySelector('.close-btn');
 
-const accountMenu = fragmentElement.querySelector('.account-info');
+var accountMenus = fragmentElement.querySelectorAll('.account');
 
-const dropdownContent = fragmentElement.querySelector('.dropdown-content');
-
-menuBtn.addEventListener('click', function() {
+menuBtn.addEventListener('click', function () {
 	menuButtonGroup.classList.toggle('menu-open');
 	tabletMobileNavSection.classList.toggle('menu-open');
 });
 
-closeBtn.addEventListener('click', function() {
+closeBtn.addEventListener('click', function () {
 	menuButtonGroup.classList.toggle('menu-open');
 	tabletMobileNavSection.classList.toggle('menu-open');
 });
 
-function showAccountDropdown() {
-	dropdownContent.classList.toggle('show');
-	dropdownContent.classList.toggle('text-primary');
-	accountMenu.classList.toggle('text-primary');
-}
-
-accountMenu.addEventListener('click', showAccountDropdown);
+accountMenus.forEach(function (accountMenu) {
+	accountMenu.addEventListener('click', function () {
+		accountMenu.classList.toggle('menu-open');
+	});
+});
 
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -41,4 +39,3 @@ accountMenu.addEventListener('click', showAccountDropdown);
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
- 
