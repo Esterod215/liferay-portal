@@ -29,7 +29,7 @@ const Goals = ({
 	onCancel,
 	onContinue,
 	onSaveAsDraft,
-}: PRMFormikPageProps & MDFRequestStepProps<MDFRequest>) => {
+}: PRMFormikPageProps & MDFRequestStepProps) => {
 	const {
 		errors,
 		isSubmitting,
@@ -44,9 +44,13 @@ const Goals = ({
 	const {companyOptions, onCompanySelected} = useCompanyOptions(
 		companiesEntries,
 		useCallback(
-			(country, company) => {
+			(country, company, accountExternalReferenceCodeSF) => {
 				setFieldValue('company', company);
 				setFieldValue('country', country);
+				setFieldValue(
+					'accountExternalReferenceCodeSF',
+					accountExternalReferenceCodeSF
+				);
 			},
 			[setFieldValue]
 		)
@@ -75,7 +79,7 @@ const Goals = ({
 	}, [errors]);
 
 	return (
-		<PRMForm className="mb-4" name="Goals" title="Campaign Information">
+		<PRMForm name="Goals" title="Campaign Information">
 			<PRMForm.Section title="Partner">
 				<PRMForm.Group>
 					<PRMFormik.Field
@@ -101,8 +105,8 @@ const Goals = ({
 			<PRMForm.Section title="Campaign">
 				<PRMFormik.Field
 					component={PRMForm.InputText}
-					label="Provide a short name of the overall campaign"
-					name="overallCampaignName"
+					label="Provide the name of the campaign"
+					name="campaignName"
 					required
 				/>
 

@@ -251,6 +251,8 @@ definition {
 	@description = "LPS-151765 - Verify it's not possible to delete an entry if the relationship is one to many with prevent deletion type"
 	@priority = "4"
 	test CannotDeleteEntryWhenDeletionTypeIsPrevent {
+		property portal.upstream = "quarantine";
+
 		Accounts.openAccountsAdmin();
 
 		Accounts.addBusinessAccount(
@@ -326,14 +328,14 @@ definition {
 
 		ObjectAdmin.goToCustomObject(objectName = "CustomObject153532");
 
-		ObjectPortlet.deleteEntry(entry = "Entry A");
-
-		ObjectPortlet.viewEntry(entry = "Entry A");
+		ObjectPortlet.assertDeleteEntryButtonNotPresent(entry = "Entry A");
 	}
 
 	@description = "LPS-151765 - Verify if Disassociate deletion type of Relationship One to Many can delete normally and nothing happens with the child"
 	@priority = "4"
 	test CannotDeleteRelationshipWhenDeletionTypeIsDisassociate {
+		property portal.upstream = "quarantine";
+
 		Accounts.openAccountsAdmin();
 
 		Accounts.addBusinessAccount(

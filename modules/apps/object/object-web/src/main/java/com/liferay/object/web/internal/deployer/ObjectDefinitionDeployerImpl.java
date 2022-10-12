@@ -112,7 +112,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Brian Wing Shun Chan
  */
-@Component(immediate = true, service = ObjectDefinitionDeployer.class)
+@Component(service = ObjectDefinitionDeployer.class)
 public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	@Override
@@ -176,19 +176,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				HashMapDictionaryBuilder.<String, Object>put(
 					Constants.SERVICE_RANKING, 10
 				).put(
-					"company.id", objectDefinition.getCompanyId()
-				).put(
-					"item.class.name", objectDefinition.getClassName()
-				).build()),
-			_bundleContext.registerService(
-				InfoItemFieldValuesProvider.class,
-				new ObjectEntryInfoItemFieldValuesProvider(
-					_assetDisplayPageFriendlyURLProvider,
-					_infoItemFieldReaderFieldSetProvider, _jsonFactory,
-					_listTypeEntryLocalService, _objectEntryLocalService,
-					_objectFieldLocalService, _templateInfoItemFieldSetProvider,
-					_userLocalService),
-				HashMapDictionaryBuilder.<String, Object>put(
 					"company.id", objectDefinition.getCompanyId()
 				).put(
 					"item.class.name", objectDefinition.getClassName()
@@ -352,6 +339,24 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					"javax.portlet.name", objectDefinition.getPortletId()
 				).put(
 					"mvc.command.name", "/object_entries/edit_object_entry"
+				).build()));
+
+		// TODO Explain 910ae730
+
+		serviceRegistrations.add(
+			_bundleContext.registerService(
+				InfoItemFieldValuesProvider.class,
+				new ObjectEntryInfoItemFieldValuesProvider(
+					_assetDisplayPageFriendlyURLProvider,
+					_infoItemFieldReaderFieldSetProvider, _jsonFactory,
+					_listTypeEntryLocalService, objectDefinition,
+					_objectEntryLocalService, _objectEntryManagerTracker,
+					_objectFieldLocalService, _templateInfoItemFieldSetProvider,
+					_userLocalService),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"company.id", objectDefinition.getCompanyId()
+				).put(
+					"item.class.name", objectDefinition.getClassName()
 				).build()));
 
 		// Register ObjectEntriesPanelApp after ObjectEntriesPortlet. See

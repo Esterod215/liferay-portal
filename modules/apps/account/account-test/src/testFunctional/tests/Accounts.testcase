@@ -145,15 +145,10 @@ definition {
 
 			UserNavigator.gotoUser(userScreenName = "usersn");
 
-			UserNavigator.gotoMemberships();
-
-			AssertElementPresent(
-				key_accountName = "Account Name",
-				locator1 = "UsersAndOrganizationsEditUser#ACCOUNTS_TABLE_ACCOUNT_NAMES");
-
-			AssertElementPresent(
-				key_accountRole = "Account Administrator",
-				locator1 = "UsersAndOrganizationsEditUser#ACCOUNTS_TABLE_ACCOUNT_ROLES");
+			User.viewMemberships(
+				assetType = "Accounts",
+				assigneeName = "Account Name",
+				roleName = "Account Administrator");
 		}
 	}
 
@@ -452,12 +447,10 @@ definition {
 
 			UserNavigator.gotoUser(userScreenName = "usersn");
 
-			UserNavigator.gotoMemberships();
-
 			for (var accountName : list "Account Test 1,Account Test 2") {
-				AssertElementPresent(
-					key_accountName = "${accountName}",
-					locator1 = "UsersAndOrganizationsEditUser#ACCOUNTS_TABLE_ACCOUNT_NAMES");
+				User.viewMemberships(
+					assetType = "Accounts",
+					assigneeName = "${accountName}");
 			}
 		}
 	}
@@ -906,11 +899,9 @@ definition {
 
 			UserNavigator.gotoUser(userScreenName = "usersn");
 
-			UserNavigator.gotoMemberships();
-
-			AssertElementPresent(
-				key_accountName = "Account Name",
-				locator1 = "UsersAndOrganizationsEditUser#ACCOUNTS_TABLE_ACCOUNT_NAMES");
+			User.viewMemberships(
+				assetType = "Accounts",
+				assigneeName = "Account Name");
 		}
 	}
 

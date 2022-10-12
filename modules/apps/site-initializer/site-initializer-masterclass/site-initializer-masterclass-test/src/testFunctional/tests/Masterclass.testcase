@@ -603,20 +603,12 @@ definition {
 	test ChangetheNumberofBlogsinBlogsListatDPT {
 		property release.feature.flags.disable.DISABLE_PRIVATE_LAYOUTS = "true";
 
-		task ("Go to Display Page Templates") {
-			ProductMenu.gotoPortlet(
-				category = "Design",
-				portlet = "Page Templates");
-
-			NavItem.gotoPageTemplates();
-
-			Navigator.gotoNavTab(navTab = "Display Page Templates");
-		}
-
 		task ("Go to Blog Entry and Edit the Layout and Maximum Number of Itens") {
+			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-masterclass-name");
+
 			LexiconEntry.gotoEntry(rowEntry = "Blog Entry");
 
-			WaitForPageLoad();
+			PageEditor.assertFragmentSidebarLoaded();
 
 			PageEditor.editCollectionDisplay(
 				fragmentName = "Collection Display",
@@ -1281,6 +1273,7 @@ definition {
 			Role.definePermissionCP(
 				permissionDefinitionKey = "SITE_ADMIN_PAGES_SITE_PAGES_GENERAL_PERMISSIONS_VIEW_CHECKBOX",
 				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Pages",
 				roleTitle = "Student",
 				roleType = "Site");
 
@@ -1292,6 +1285,7 @@ definition {
 			Role.definePermissionCP(
 				permissionDefinitionKey = "SITE_ADMIN_PAGES_SITE_PAGES_RESOURCE_PERMISSIONS_PAGE_VIEW_CHECKBOX",
 				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Pages",
 				roleTitle = "Student",
 				roleType = "Site");
 
@@ -1303,6 +1297,7 @@ definition {
 			Role.definePermissionCP(
 				permissionDefinitionKey = "SITE_ADMIN_PAGES_SITE_PAGES_RESOURCE_PERMISSIONS_SITE_VIEW_CHECKBOX",
 				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Site",
 				roleTitle = "Student",
 				roleType = "Site");
 		}
@@ -1340,6 +1335,7 @@ definition {
 			Role.definePermissionCP(
 				permissionDefinitionKey = "SITE_ADMIN_PAGES_SITE_PAGES_GENERAL_PERMISSIONS_VIEW_CHECKBOX",
 				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Pages",
 				roleTitle = "Teacher",
 				roleType = "Site");
 
@@ -1351,6 +1347,7 @@ definition {
 			Role.definePermissionCP(
 				permissionDefinitionKey = "SITE_ADMIN_PAGES_SITE_PAGES_RESOURCE_PERMISSIONS_PAGE_VIEW_CHECKBOX",
 				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Pages",
 				roleTitle = "Teacher",
 				roleType = "Site");
 
@@ -1362,6 +1359,7 @@ definition {
 			Role.definePermissionCP(
 				permissionDefinitionKey = "SITE_ADMIN_PAGES_SITE_PAGES_RESOURCE_PERMISSIONS_SITE_VIEW_CHECKBOX",
 				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Site",
 				roleTitle = "Teacher",
 				roleType = "Site");
 		}

@@ -44,7 +44,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * @author Michael C. Han
  */
 @Component(
-	immediate = true, property = "assignee.class.name=SCRIPT",
+	property = "assignee.class.name=SCRIPT",
 	service = KaleoTaskAssignmentSelector.class
 )
 public class MultiLanguageKaleoTaskAssignmentSelector
@@ -77,7 +77,7 @@ public class MultiLanguageKaleoTaskAssignmentSelector
 		if (kaleoTaskAssignmentSelector == null) {
 			throw new IllegalArgumentException(
 				"No task assignment selector found for " +
-					kaleoTaskAssignment.toXmlString());
+					kaleoTaskAssignment.toString());
 		}
 
 		Collection<KaleoTaskAssignment> kaleoTaskAssignments =

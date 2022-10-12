@@ -115,7 +115,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Javier de Arcos
  */
 @Component(
-	immediate = true,
 	property = "object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
 	service = ObjectEntryManager.class
 )
@@ -403,10 +402,27 @@ public class DefaultObjectEntryManagerImpl
 						objectDefinition.getObjectDefinitionId()),
 					groupId, dtoConverterContext.getUriInfo())
 			).put(
+				"deleteBatch",
+				ActionUtil.addAction(
+					ActionKeys.DELETE, ObjectEntryResourceImpl.class, null,
+					"deleteObjectEntryBatch", null,
+					objectDefinition.getUserId(),
+					_getObjectEntriesPermissionName(
+						objectDefinition.getObjectDefinitionId()),
+					groupId, dtoConverterContext.getUriInfo())
+			).put(
 				"get",
 				ActionUtil.addAction(
 					ActionKeys.VIEW, ObjectEntryResourceImpl.class, 0L,
 					"getObjectEntriesPage", null, objectDefinition.getUserId(),
+					_getObjectEntriesPermissionName(
+						objectDefinition.getObjectDefinitionId()),
+					groupId, dtoConverterContext.getUriInfo())
+			).put(
+				"updateBatch",
+				ActionUtil.addAction(
+					ActionKeys.UPDATE, ObjectEntryResourceImpl.class, null,
+					"putObjectEntryBatch", null, objectDefinition.getUserId(),
 					_getObjectEntriesPermissionName(
 						objectDefinition.getObjectDefinitionId()),
 					groupId, dtoConverterContext.getUriInfo())

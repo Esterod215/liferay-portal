@@ -67,7 +67,6 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -535,14 +534,9 @@ public class ObjectFieldLocalServiceImpl
 				newObjectField.getObjectDefinitionId());
 
 		if (Validator.isNotNull(newObjectField.getRelationshipType())) {
-			if (GetterUtil.getBoolean(
-					PropsUtil.get("feature.flag.LPS-158962"))) {
+			_validateObjectRelationshipDeletionType(objectFieldId, required);
 
-				_validateObjectRelationshipDeletionType(
-					objectFieldId, required);
-
-				newObjectField.setRequired(required);
-			}
+			newObjectField.setRequired(required);
 
 			if (!Objects.equals(newObjectField.getDBType(), dbType) ||
 				!Objects.equals(newObjectField.getName(), name)) {
@@ -557,12 +551,6 @@ public class ObjectFieldLocalServiceImpl
 		}
 
 		_validateState(required, state);
-
-		if (objectDefinition.isSystem() &&
-			!GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-135404"))) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		newObjectField.setExternalReferenceCode(externalReferenceCode);
 		newObjectField.setDefaultValue(defaultValue);
@@ -630,8 +618,7 @@ public class ObjectFieldLocalServiceImpl
 		ObjectField objectField = objectFieldPersistence.findByPrimaryKey(
 			objectFieldId);
 
-		if (GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-158962")) &&
-			StringUtil.equals(
+		if (StringUtil.equals(
 				objectField.getBusinessType(),
 				ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
@@ -758,26 +745,6 @@ public class ObjectFieldLocalServiceImpl
 				newObjectField.getObjectFieldId()));
 	}
 
-	private void _deleteFileEntries(long objectDefinitionId, String name) {
-		List<ObjectEntry> objectEntries =
-			_objectEntryPersistence.findByObjectDefinitionId(
-				objectDefinitionId);
-
-		for (ObjectEntry objectEntry : objectEntries) {
-			Map<String, Serializable> values = objectEntry.getValues();
-
-			try {
-				_dlFileEntryLocalService.deleteFileEntry(
-					GetterUtil.getLong(values.get(name)));
-			}
-			catch (PortalException portalException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(portalException);
-				}
-			}
-		}
-	}
-
 	private ObjectField _deleteObjectField(ObjectField objectField)
 		throws PortalException {
 
@@ -796,6 +763,39 @@ public class ObjectFieldLocalServiceImpl
 			throw new RequiredObjectFieldException();
 		}
 
+		if (Objects.equals(
+				objectField.getBusinessType(),
+				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+			ObjectFieldSetting objectFieldSetting =
+				_objectFieldSettingPersistence.fetchByOFI_N(
+					objectField.getObjectFieldId(), "fileSource");
+
+			if (Objects.equals(objectFieldSetting.getValue(), "userComputer")) {
+				List<ObjectEntry> objectEntries =
+					_objectEntryPersistence.findByObjectDefinitionId(
+						objectField.getObjectDefinitionId());
+
+				for (ObjectEntry objectEntry : objectEntries) {
+
+					// getValues must be called before deleting the object field
+
+					Map<String, Serializable> values = objectEntry.getValues();
+
+					try {
+						_dlFileEntryLocalService.deleteFileEntry(
+							GetterUtil.getLong(
+								values.get(objectField.getName())));
+					}
+					catch (PortalException portalException) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(portalException);
+						}
+					}
+				}
+			}
+		}
+
 		objectField = objectFieldPersistence.remove(objectField);
 
 		if (objectDefinition.getAccountEntryRestrictedObjectFieldId() ==
@@ -806,19 +806,6 @@ public class ObjectFieldLocalServiceImpl
 
 			objectDefinition = _objectDefinitionPersistence.update(
 				objectDefinition);
-		}
-
-		String objectFieldSettingFileSource = StringPool.BLANK;
-
-		if (Objects.equals(
-				objectField.getBusinessType(),
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
-
-			ObjectFieldSetting objectFieldSetting =
-				_objectFieldSettingPersistence.fetchByOFI_N(
-					objectField.getObjectFieldId(), "fileSource");
-
-			objectFieldSettingFileSource = objectFieldSetting.getValue();
 		}
 
 		_objectFieldSettingLocalService.deleteObjectFieldObjectFieldSetting(
@@ -844,11 +831,6 @@ public class ObjectFieldLocalServiceImpl
 			!Objects.equals(
 				objectField.getBusinessType(),
 				ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION)) {
-
-			if (Objects.equals(objectFieldSettingFileSource, "userComputer")) {
-				_deleteFileEntries(
-					objectField.getObjectDefinitionId(), objectField.getName());
-			}
 
 			runSQL(
 				DynamicObjectDefinitionTable.getAlterTableDropColumnSQL(

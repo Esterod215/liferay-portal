@@ -712,19 +712,16 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
-		User.gotoEditCP(userScreenName = "usersn");
+		UserNavigator.gotoUser(userScreenName = "usersn");
 
-		User.viewUserInfomationOrganizationSitesCP(
-			orgName = "Organization Name",
-			siteName = "Organization Name");
+		User.viewMemberships(
+			assetType = "Sites",
+			assigneeName = "Organization Name");
 	}
 
 	@priority = "4"
 	test EditDefaultUserAssociationsRoles {
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Roles");
+		Role.openRolesAdmin();
 
 		Role.add(roleTitle = "Roles Regrole Name");
 
@@ -741,7 +738,7 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
-		User.gotoEditCP(userScreenName = "usersn");
+		UserNavigator.gotoUser(userScreenName = "usersn");
 
 		User.viewUserInfomationRolesCP(roleTitle = "Roles Regrole Name");
 	}
@@ -768,9 +765,11 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
-		User.gotoEditCP(userScreenName = "usersn");
+		UserNavigator.gotoUser(userScreenName = "usersn");
 
-		User.viewUserInfomationSitesCP(siteName = "Site Name");
+		User.viewMemberships(
+			assetType = "Sites",
+			assigneeName = "Site Name");
 	}
 
 	@priority = "4"
@@ -795,9 +794,11 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
-		User.gotoEditCP(userScreenName = "usersn");
+		UserNavigator.gotoUser(userScreenName = "usersn");
 
-		User.viewUserInfomationUserGroupsCP(userGroupName = "UG UserGroup Name");
+		User.viewMemberships(
+			assetType = "User Groups",
+			assigneeName = "UG UserGroup Name");
 	}
 
 	@priority = "5"

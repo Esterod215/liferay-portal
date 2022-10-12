@@ -16,14 +16,24 @@ package com.liferay.layout.admin.web.internal.frontend.taglib.clay.servlet.tagli
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.BaseVerticalCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
+import com.liferay.layout.admin.web.internal.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.admin.web.internal.servlet.taglib.util.LayoutUtilityPageEntryActionDropdownItemsProvider;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Eudaldo Alonso
@@ -39,6 +49,10 @@ public class LayoutUtilityPageEntryVerticalCard extends BaseVerticalCard {
 		_layoutUtilityPageEntry = layoutUtilityPageEntry;
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
+
+		_draftLayout = LayoutLocalServiceUtil.fetchDraftLayout(
+			_layoutUtilityPageEntry.getPlid());
+		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 	}
 
 	@Override
@@ -58,6 +72,17 @@ public class LayoutUtilityPageEntryVerticalCard extends BaseVerticalCard {
 	}
 
 	@Override
+	public List<LabelItem> getLabels() {
+		if (_draftLayout == null) {
+			return Collections.emptyList();
+		}
+
+		return LabelItemListBuilder.add(
+			labelItem -> labelItem.setStatus(_draftLayout.getStatus())
+		).build();
+	}
+
+	@Override
 	public String getStickerIcon() {
 		if (_layoutUtilityPageEntry.isDefaultLayoutUtilityPageEntry()) {
 			return "check-circle";
@@ -72,6 +97,15 @@ public class LayoutUtilityPageEntryVerticalCard extends BaseVerticalCard {
 	}
 
 	@Override
+	public String getSubtitle() {
+		LayoutUtilityPageEntryConstants.Type type =
+			LayoutUtilityPageEntryConstants.parse(
+				_layoutUtilityPageEntry.getType());
+
+		return LanguageUtil.get(_httpServletRequest, type.getLabel());
+	}
+
+	@Override
 	public String getTitle() {
 		return HtmlUtil.escape(_layoutUtilityPageEntry.getName());
 	}
@@ -81,6 +115,8 @@ public class LayoutUtilityPageEntryVerticalCard extends BaseVerticalCard {
 		return true;
 	}
 
+	private final Layout _draftLayout;
+	private final HttpServletRequest _httpServletRequest;
 	private final LayoutUtilityPageEntry _layoutUtilityPageEntry;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;

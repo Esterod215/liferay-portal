@@ -24,6 +24,7 @@ import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.internal.dto.v1_0.converter.AccountResourceDTOConverter;
 import com.liferay.headless.admin.user.internal.dto.v1_0.converter.OrganizationResourceDTOConverter;
 import com.liferay.headless.admin.user.internal.dto.v1_0.converter.UserResourceDTOConverter;
+import com.liferay.headless.admin.user.internal.dto.v1_0.util.CustomFieldsUtil;
 import com.liferay.headless.admin.user.internal.dto.v1_0.util.ServiceBuilderAddressUtil;
 import com.liferay.headless.admin.user.internal.dto.v1_0.util.ServiceBuilderCountryUtil;
 import com.liferay.headless.admin.user.internal.dto.v1_0.util.ServiceBuilderEmailAddressUtil;
@@ -34,6 +35,7 @@ import com.liferay.headless.admin.user.internal.dto.v1_0.util.ServiceBuilderWebs
 import com.liferay.headless.admin.user.internal.odata.entity.v1_0.OrganizationEntityModel;
 import com.liferay.headless.admin.user.resource.v1_0.OrganizationResource;
 import com.liferay.headless.admin.user.resource.v1_0.RoleResource;
+import com.liferay.headless.common.spi.service.context.ServiceContextRequestUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -58,7 +60,6 @@ import com.liferay.portal.kernel.service.OrgLaborLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.OrganizationService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -329,7 +330,7 @@ public class OrganizationResourceImpl
 				organization.getComment(), false, _getAddresses(organization),
 				_getEmailAddresses(organization), _getOrgLabors(organization),
 				_getPhones(organization), _getWebsites(organization),
-				ServiceContextFactory.getInstance(contextHttpServletRequest));
+				_createServiceContext(organization));
 
 		return _organizationResourceDTOConverter.toDTO(
 			_getDTOConverterContext(
@@ -425,7 +426,7 @@ public class OrganizationResourceImpl
 				_getAddresses(organization), _getEmailAddresses(organization),
 				_getOrgLabors(organization), _getPhones(organization),
 				_getWebsites(organization),
-				ServiceContextFactory.getInstance(contextHttpServletRequest)));
+				_createServiceContext(organization)));
 	}
 
 	@Override
@@ -467,7 +468,7 @@ public class OrganizationResourceImpl
 				_getAddresses(organization), _getEmailAddresses(organization),
 				_getOrgLabors(organization), _getPhones(organization),
 				_getWebsites(organization),
-				ServiceContextFactory.getInstance(contextHttpServletRequest));
+				_createServiceContext(organization));
 
 		return _organizationResourceDTOConverter.toDTO(
 			_getDTOConverterContext(
@@ -525,6 +526,17 @@ public class OrganizationResourceImpl
 		if (organization.getServices() != null) {
 			existingOrganization.setServices(organization.getServices());
 		}
+	}
+
+	private ServiceContext _createServiceContext(Organization organization)
+		throws Exception {
+
+		return ServiceContextRequestUtil.createServiceContext(
+			CustomFieldsUtil.toMap(
+				com.liferay.portal.kernel.model.Organization.class.getName(),
+				contextCompany.getCompanyId(), organization.getCustomFields(),
+				contextAcceptLanguage.getPreferredLocale()),
+			contextCompany.getGroupId(), contextHttpServletRequest, null);
 	}
 
 	private List<Address> _getAddresses(Organization organization) {

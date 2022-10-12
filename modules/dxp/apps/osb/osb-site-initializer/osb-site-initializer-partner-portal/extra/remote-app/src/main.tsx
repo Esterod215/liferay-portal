@@ -13,13 +13,16 @@ import {ClayIconSpriteContext} from '@clayui/icon';
 import {Root, createRoot} from 'react-dom/client';
 import {SWRConfig} from 'swr';
 
+import {WebDAV} from './common/context/WebDAV';
 import {AppRouteType} from './common/enums/appRouteType';
 import getIconSpriteMap from './common/utils/getIconSpriteMap';
 import handleError from './common/utils/handleError';
+import MDFClaimForm from './routes/MDFClaimForm';
 import MDFRequestForm from './routes/MDFRequestForm';
 import MDFRequestList from './routes/MDFRequestList';
 
 interface IProps {
+	liferayWebDAV: string;
 	route: AppRouteType;
 }
 
@@ -30,9 +33,10 @@ type AppRouteComponent = {
 const appRoutes: AppRouteComponent = {
 	[AppRouteType.MDF_REQUEST_FORM]: <MDFRequestForm />,
 	[AppRouteType.MDF_REQUEST_LIST]: <MDFRequestList />,
+	[AppRouteType.MDF_CLAIM_FORM]: <MDFClaimForm />,
 };
 
-const PartnerPortalApp = ({route}: IProps) => {
+const PartnerPortalApp = ({liferayWebDAV, route}: IProps) => {
 	return (
 		<SWRConfig
 			value={{
@@ -42,9 +46,11 @@ const PartnerPortalApp = ({route}: IProps) => {
 				shouldRetryOnError: false,
 			}}
 		>
-			<ClayIconSpriteContext.Provider value={getIconSpriteMap()}>
-				{appRoutes[route]}
-			</ClayIconSpriteContext.Provider>
+			<WebDAV value={liferayWebDAV}>
+				<ClayIconSpriteContext.Provider value={getIconSpriteMap()}>
+					{appRoutes[route]}
+				</ClayIconSpriteContext.Provider>
+			</WebDAV>
 		</SWRConfig>
 	);
 };
@@ -58,6 +64,9 @@ class PartnerPortalRemoteAppComponent extends HTMLElement {
 
 			this.root.render(
 				<PartnerPortalApp
+					liferayWebDAV={
+						super.getAttribute('liferaywebdavurl') as string
+					}
 					route={super.getAttribute('route') as AppRouteType}
 				/>
 			);

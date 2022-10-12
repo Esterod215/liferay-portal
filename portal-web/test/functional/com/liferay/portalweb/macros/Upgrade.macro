@@ -3754,7 +3754,7 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
-		User.gotoEditCP(userScreenName = "usersn");
+		UserNavigator.gotoUser(userScreenName = "usersn");
 
 		UserNavigator.gotoOrganizations();
 
@@ -3763,7 +3763,9 @@ definition {
 			locator1 = "ContentRow#ORGANIZATION_TABLE_NAME",
 			value1 = "Organization1");
 
-		User.viewUserInfomationSitesCP(siteName = "Test Site Name");
+		User.viewMemberships(
+			assetType = "Sites",
+			assigneeName = "Test Site Name");
 
 		User.viewUserInfomationRolesCP(roleTitle = "Administrator");
 
@@ -3818,7 +3820,7 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
-		User.gotoEditCP(userScreenName = "usersn");
+		UserNavigator.gotoUser(userScreenName = "usersn");
 
 		User.deleteProfileImage();
 
@@ -3881,7 +3883,7 @@ definition {
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
 
-		User.gotoEditCP(userScreenName = "usersn1");
+		UserNavigator.gotoUser(userScreenName = "usersn1");
 
 		AssetCategorization.removeTag(tagName = "tag1");
 

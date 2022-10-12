@@ -651,6 +651,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ELIGIBILITY_CARD_TITLE</td>
+	<td>//div/h4[contains(.,'${key_eligibilityCardTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TABLE_ENTRY_ROW_NUMBER</td>
 	<td>//div[@class='dnd-tbody']/div[contains(@class,'dnd-tr')][${key_rowNumber}]//a</td>
 	<td></td>
@@ -683,6 +688,11 @@
 <tr>
 	<td>TABLE_ENTRY_EDIT_BUTTON</td>
 	<td>//h4[contains(.,'${key_table}')]//..//div/a[contains(.,'${key_entryName}')]//..//..//../div/a[contains(.,'Edit')] | //div[contains(.,'${key_table}')]//div[@class='dnd-tr'][contains(.,'${key_entryName}')]//a[contains(text(),'Edit')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TABLE_ASSERT_TWO_COLUMNS_ELLIPSIS</td>
+	<td>//div[contains(@id,'${key_table}')]//div[1][@class='dnd-td' and contains(.,'${key_firstColumnValue}')]/following::div[@class='dnd-td' and contains (.,'${key_secondColumnValue}')]/following::div[@class='dropdown']</td>
 	<td></td>
 </tr>
 <tr>
@@ -1202,6 +1212,11 @@
 <tr>
 	<td>SPECIFIC_MENU_ITEM</td>
 	<td>//a[contains(text(),'${key_itemName}')]//..//..//*[name()='svg'][contains(@class,'lexicon-icon lexicon-icon-ellipsis-v')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WAREHOUSE_ACTIVE_STATUS</td>
+	<td>//div/a[contains(.,'${key_warehouseName}')]//..//..//..//div[(@class='dnd-td') and contains (.,'${key_activeStatus}')]</td>
 	<td></td>
 </tr>
 
