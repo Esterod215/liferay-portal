@@ -10,6 +10,8 @@ var closeBtn = fragmentElement.querySelector('.close-btn');
 
 var accountMenus = fragmentElement.querySelectorAll('.account');
 
+var sites = fragmentElement.querySelector('.sites');
+
 menuBtn.addEventListener('click', function () {
 	menuButtonGroup.classList.toggle('menu-open');
 	tabletMobileNavSection.classList.toggle('menu-open');
@@ -18,6 +20,10 @@ menuBtn.addEventListener('click', function () {
 closeBtn.addEventListener('click', function () {
 	menuButtonGroup.classList.toggle('menu-open');
 	tabletMobileNavSection.classList.toggle('menu-open');
+});
+
+sites.addEventListener('click', function () {
+	sites.classList.toggle('show');
 });
 
 accountMenus.forEach(function (accountMenu) {
