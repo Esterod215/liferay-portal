@@ -12,9 +12,24 @@
  * details.
  */
 
-import {openConfirmModal} from 'frontend-js-web';
+import {openConfirmModal, openSimpleInputModal} from 'frontend-js-web';
+
+import openDeleteLayoutModal from './openDeleteLayoutModal';
 
 const ACTIONS = {
+	deleteLayoutUtilityPageEntry({
+		deleteLayoutUtilityPageEntryMessage,
+		deleteLayoutUtilityPageEntryURL,
+	}) {
+		openDeleteLayoutModal({
+			message: deleteLayoutUtilityPageEntryMessage,
+			onDelete: () => {
+				send(deleteLayoutUtilityPageEntryURL);
+			},
+			title: Liferay.Language.get('utility-pages'),
+		});
+	},
+
 	markAsDefaultLayoutUtilityPageEntry({
 		markAsDefaultLayoutUtilityPageEntryURL,
 		message,
@@ -32,6 +47,27 @@ const ACTIONS = {
 		else {
 			send(markAsDefaultLayoutUtilityPageEntryURL);
 		}
+	},
+
+	renameLayoutUtilityPageEntry(
+		{
+			layoutUtilityPageEntryId,
+			layoutUtilityPageEntryName,
+			updateLayoutUtilityPageEntryURL,
+		},
+		namespace
+	) {
+		openSimpleInputModal({
+			dialogTitle: Liferay.Language.get('rename-utility-page'),
+			formSubmitURL: updateLayoutUtilityPageEntryURL,
+			idFieldName: 'layoutUtilityPageEntryId',
+			idFieldValue: layoutUtilityPageEntryId,
+			mainFieldLabel: Liferay.Language.get('name'),
+			mainFieldName: 'name',
+			mainFieldPlaceholder: Liferay.Language.get('name'),
+			mainFieldValue: layoutUtilityPageEntryName,
+			namespace,
+		});
 	},
 };
 

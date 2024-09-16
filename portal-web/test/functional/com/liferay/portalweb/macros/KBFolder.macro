@@ -131,8 +131,9 @@ definition {
 			Click(locator1 = "KnowledgeBaseSelectParent#BREADCRUMB_HOME");
 
 			AssertClick(
-				locator1 = "Button#CHOOSE_THIS_FOLDER",
-				value1 = "Choose This Folder");
+				key_text = "Select This Folder",
+				locator1 = "Button#ANY",
+				value1 = "Select This Folder");
 		}
 		else {
 			Click(

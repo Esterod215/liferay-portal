@@ -702,7 +702,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		// Cache
 
-		clearPageCache(page);
+		_clearPageCache();
 
 		// Version pages
 
@@ -2226,7 +2226,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			// Cache
 
-			clearPageCache(page);
+			_clearPageCache();
 		}
 		else {
 			page = _updatePageStatus(user, page, status);
@@ -2299,20 +2299,20 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			WikiFileUploadConfiguration.class, properties);
 	}
 
-	protected void clearPageCache(WikiPage page) {
-		if (!WikiCacheThreadLocal.isClearCache()) {
-			return;
-		}
-
-		_portalCache.removeAll();
-	}
-
 	@Deactivate
 	@Override
 	protected void deactivate() {
 		super.deactivate();
 
 		_serviceTrackerMap.close();
+
+		_portalCache.removeAll();
+	}
+
+	private void _clearPageCache() {
+		if (!WikiCacheThreadLocal.isClearCache()) {
+			return;
+		}
 
 		_portalCache.removeAll();
 	}

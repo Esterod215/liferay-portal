@@ -461,12 +461,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 			Map<String, Layout> layouts = _invoke(
 				() -> _addOrUpdateLayouts(serviceContext));
 
-			_invoke(
-				() -> _addLayoutPageTemplates(
-					assetListEntryIdsStringUtilReplaceValues,
-					documentsStringUtilReplaceValues, serviceContext,
-					taxonomyCategoryIdsStringUtilReplaceValues));
-
 			Map<String, String> listTypeDefinitionIdsStringUtilReplaceValues =
 				_invoke(() -> _addOrUpdateListTypeDefinitions(serviceContext));
 
@@ -491,6 +485,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 					documentsStringUtilReplaceValues,
 					objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
 					serviceContext));
+			_invoke(
+				() -> _addLayoutPageTemplates(
+					assetListEntryIdsStringUtilReplaceValues,
+					documentsStringUtilReplaceValues,
+					objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
+					serviceContext,
+					taxonomyCategoryIdsStringUtilReplaceValues));
 			_invoke(
 				() -> _addOrUpdateNotificationTemplates(
 					documentsStringUtilReplaceValues,
@@ -763,8 +764,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				String json = StringUtil.read(url.openStream());
 
 				json = _replace(
-					json, "\"[$", "$]\"",
-					assetListEntryIdsStringUtilReplaceValues,
+					json, assetListEntryIdsStringUtilReplaceValues,
 					documentsStringUtilReplaceValues);
 
 				Group group = serviceContext.getScopeGroup();
@@ -845,7 +845,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 					String.valueOf(serviceContext.getScopeGroupId()),
 					group.getGroupKey()
 				}),
-			"[$", "$]", assetListEntryIdsStringUtilReplaceValues,
+			assetListEntryIdsStringUtilReplaceValues,
 			clientExtensionEntryIdsStringUtilReplaceValues,
 			ddmStructureEntryIdsStringUtilReplaceValues,
 			documentsStringUtilReplaceValues,
@@ -912,9 +912,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 				unicodeProperties.put(
 					key,
-					_replace(
-						value, "[$", "$]",
-						assetListEntryIdsStringUtilReplaceValues));
+					_replace(value, assetListEntryIdsStringUtilReplaceValues));
 			}
 
 			draftLayout = _layoutLocalService.updateLayout(
@@ -947,6 +945,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private void _addLayoutPageTemplates(
 			Map<String, String> assetListEntryIdsStringUtilReplaceValues,
 			Map<String, String> documentsStringUtilReplaceValues,
+			Map<String, String>
+				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
 			ServiceContext serviceContext,
 			Map<String, String> taxonomyCategoryIdsStringUtilReplaceValues)
 		throws Exception {
@@ -971,13 +971,15 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			String urlPath = url.getPath();
 
-			if (StringUtil.endsWith(urlPath, "page-definition.json")) {
+			if (StringUtil.endsWith(urlPath, "display-page-template.json") ||
+				StringUtil.endsWith(urlPath, "page-definition.json")) {
+
 				String json = StringUtil.read(url.openStream());
 
 				json = _replace(
-					json, "\"[$", "$]\"",
-					assetListEntryIdsStringUtilReplaceValues,
+					json, assetListEntryIdsStringUtilReplaceValues,
 					documentsStringUtilReplaceValues,
+					objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
 					taxonomyCategoryIdsStringUtilReplaceValues);
 
 				Group group = serviceContext.getScopeGroup();
@@ -998,7 +1000,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 					SiteInitializerUtil.read(
 						FileUtil.getPath(urlPath) + "/css.css",
 						_servletContext),
-					"[$", "$]", documentsStringUtilReplaceValues);
+					documentsStringUtilReplaceValues);
 
 				if (Validator.isNotNull(css)) {
 					JSONObject jsonObject = _jsonFactory.createJSONObject(json);
@@ -1098,8 +1100,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String json = SiteInitializerUtil.read(
 				resourcePath, _servletContext);
 
-			json = _replace(
-				json, "[$", "$]", listTypeDefinitionIdsStringUtilReplaceValues);
+			json = _replace(json, listTypeDefinitionIdsStringUtilReplaceValues);
 
 			ObjectDefinition objectDefinition = ObjectDefinition.toDTO(json);
 
@@ -1404,7 +1405,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 							JSONUtil.toStringArray(
 								jsonObject.getJSONArray("cssURLs")),
 							StringPool.NEW_LINE),
-						"[$", "$]", documentsStringUtilReplaceValues)
+						documentsStringUtilReplaceValues)
 				).put(
 					"friendlyURLMapping", StringPool.BLANK
 				).put(
@@ -1421,7 +1422,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 							JSONUtil.toStringArray(
 								jsonObject.getJSONArray("elementURLs")),
 							StringPool.NEW_LINE),
-						"[$", "$]", documentsStringUtilReplaceValues)
+						documentsStringUtilReplaceValues)
 				).put(
 					"useESM", jsonObject.getBoolean("useESM", false)
 				).buildString());
@@ -1885,7 +1886,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 						SiteInitializerUtil.read(
 							_replace(resourcePath, ".json", ".xml"),
 							_servletContext),
-						"[$", "$]", documentsStringUtilReplaceValues),
+						documentsStringUtilReplaceValues),
 					ddmStructureKey, ddmTemplateKey, null,
 					calendar.get(Calendar.MONTH),
 					calendar.get(Calendar.DAY_OF_MONTH),
@@ -1905,7 +1906,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 						SiteInitializerUtil.read(
 							_replace(resourcePath, ".json", ".xml"),
 							_servletContext),
-						"[$", "$]", documentsStringUtilReplaceValues),
+						documentsStringUtilReplaceValues),
 					ddmStructureKey, ddmTemplateKey, null,
 					calendar.get(Calendar.MONTH),
 					calendar.get(Calendar.DAY_OF_MONTH),
@@ -2353,7 +2354,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				FileUtil.getShortFileName(
 					FileUtil.stripExtension(url.getPath())),
 				_replace(
-					StringUtil.read(url.openStream()), "[$", "$]",
+					StringUtil.read(url.openStream()),
 					documentsStringUtilReplaceValues));
 		}
 
@@ -2405,8 +2406,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 
 		json = _replace(
-			json, "[$", "$]",
-			objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues);
+			json, objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues);
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(json);
 
@@ -2483,8 +2483,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				continue;
 			}
 
-			json = _replace(
-				json, "[$", "$]", objectEntryIdsStringUtilReplaceValues);
+			json = _replace(json, objectEntryIdsStringUtilReplaceValues);
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
 
@@ -2585,8 +2584,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String json = SiteInitializerUtil.read(
 				resourcePath, _servletContext);
 
-			json = _replace(
-				json, "[$", "$]", objectDefinitionIdsStringUtilReplaceValues);
+			json = _replace(json, objectDefinitionIdsStringUtilReplaceValues);
 
 			ObjectRelationship objectRelationship = ObjectRelationship.toDTO(
 				json);
@@ -2721,7 +2719,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
 			_replace(
-				json, "[$", "$]",
+				json,
 				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues));
 
 		for (int i = 0; i < jsonArray.length(); i++) {
@@ -3949,13 +3947,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 		return t;
 	}
 
-	private String _replace(String s, String oldSub, String newSub) {
-		return StringUtil.replace(s, oldSub, newSub);
-	}
-
 	private String _replace(
-		String s, String begin, String end,
-		Map<String, String>... stringUtilReplaceValuesArray) {
+		String s, Map<String, String>... stringUtilReplaceValuesArray) {
 
 		Map<String, String> aggregatedStringUtilReplaceValues = new HashMap<>();
 
@@ -3970,8 +3963,15 @@ public class BundleSiteInitializer implements SiteInitializer {
 		aggregatedStringUtilReplaceValues.putAll(
 			_releaseInfoStringUtilReplaceValues);
 
+		s = StringUtil.replace(
+			s, "\"[#", "#]\"", aggregatedStringUtilReplaceValues);
+
 		return StringUtil.replace(
-			s, begin, end, aggregatedStringUtilReplaceValues);
+			s, "[$", "$]", aggregatedStringUtilReplaceValues);
+	}
+
+	private String _replace(String s, String oldSub, String newSub) {
+		return StringUtil.replace(s, oldSub, newSub);
 	}
 
 	private String _replace(String s, String[] oldSubs, String[] newSubs) {
@@ -4099,7 +4099,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		String css = _replace(
 			SiteInitializerUtil.read(
 				resourcePath + "/css.css", _servletContext),
-			"[$", "$]", documentsStringUtilReplaceValues);
+			documentsStringUtilReplaceValues);
 
 		_layoutSetLocalService.updateLookAndFeel(
 			serviceContext.getScopeGroupId(), privateLayout,

@@ -61,9 +61,8 @@ if (portletTitleBasedNavigation) {
 				</li>
 				<li class="nav-item">
 					<liferay-frontend:sidebar-toggler-button
-						cssClass="btn-unstyled"
+						cssClass="btn btn-monospaced btn-sm btn-unstyled"
 						icon="info-circle-open"
-						label="info"
 					/>
 				</li>
 			</ul>
@@ -94,12 +93,12 @@ if (portletTitleBasedNavigation) {
 			<liferay-util:include page="/admin/common/kb_article_tools.jsp" servletContext="<%= application %>" />
 		</div>
 
-		<div <%= portletTitleBasedNavigation ? "class=\"panel\"" : StringPool.BLANK %>>
-			<div class="kb-entity-body <%= portletTitleBasedNavigation ? "panel-body" : StringPool.BLANK %>">
+		<div <%= portletTitleBasedNavigation ? "class=\"sheet\"" : StringPool.BLANK %>>
+			<div class="kb-entity-body">
 				<c:if test="<%= portletTitleBasedNavigation %>">
-					<h1>
+					<div class="kb-article-title">
 						<%= HtmlUtil.escape(kbArticle.getTitle()) %>
-					</h1>
+					</div>
 				</c:if>
 
 				<div id="<portlet:namespace /><%= kbArticle.getResourcePrimKey() %>">
@@ -169,13 +168,15 @@ if (portletTitleBasedNavigation) {
 				<c:choose>
 					<c:when test="<%= portletTitleBasedNavigation %>">
 						<liferay-ui:panel-container
-							extended="<%= false %>"
+							cssClass="mt-5 panel-group-flush panel-group-sm"
+							extended="<%= true %>"
 							markupView="lexicon"
 							persistState="<%= true %>"
 						>
 							<liferay-ui:panel
 								collapsible="<%= true %>"
-								extended="<%= false %>"
+								cssClass="panel-unstyled"
+								extended="<%= true %>"
 								markupView="lexicon"
 								persistState="<%= true %>"
 								title="suggestions"
